@@ -17,7 +17,8 @@ webhook = os.environ.get("SLACK_WEBHOOK_ATT_ALERTS")
 if not webhook:
     sys.exit("Set SLACK_WEBHOOK_ATT_ALERTS to the #att-alerts incoming webhook URL")
 
-sample = "\n".join(LOG_FILE.read_text().splitlines()[:6])
+errors = [l for l in LOG_FILE.read_text().splitlines() if '"status": 500' in l or '"stack"' in l]
+sample = "\n".join(errors[:2])
 text = (
     f":rotating_light: *{ALERT}*\n"
     f"*Service:* savings-api   *Environment:* prod, synthetic\n"
