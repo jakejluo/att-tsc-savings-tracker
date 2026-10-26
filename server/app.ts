@@ -22,7 +22,7 @@ export function createApp(db: Db, opts: { staticDir?: string } = {}) {
       log(res.statusCode >= 500 ? "error" : "info", "request", {
         method: req.method,
         route: req.route ? `${req.baseUrl}${req.route.path}` : req.path,
-        path: req.originalUrl,
+        path: req.path,
         status: res.statusCode,
         duration_ms: Date.now() - start,
         user: req.user?.name,
@@ -63,7 +63,8 @@ export function createApp(db: Db, opts: { staticDir?: string } = {}) {
       return;
     }
     const e = parsed.data;
-    const [row] = await db("events")
+    const id = await db.transaction(async (trx) => {
+      const [row] = await trx("events")
       .insert({
         supplier: e.supplier,
         category: e.category,
@@ -74,8 +75,10 @@ export function createApp(db: Db, opts: { staticDir?: string } = {}) {
         created_by: req.user!.name,
       })
       .returning("id");
-    const id = typeof row === "object" ? row.id : row;
-    await audit(db, req.user!, "event.created", id, `${e.supplier} ${e.category} savings ${e.baselinePrice - e.negotiatedPrice}`);
+      const newId = typeof row === "object" ? row.id : row;
+      await audit(trx, req.user!, "event.created", newId, `${e.supplier} ${e.category} savings ${e.baselinePrice - e.negotiatedPrice}`);
+      return newId;
+    });
     res.status(201).json(await getEvent(db, id));
   }));
 
@@ -103,8 +106,15 @@ export function createApp(db: Db, opts: { staticDir?: string } = {}) {
       res.status(400).json({ error: "negotiatedPrice: Negotiated price must be below baseline price" });
       return;
     }
-    await db("events").where({ id }).update(columnsFor(parsed.data));
-    await audit(db, req.user!, "event.updated", id, JSON.stringify(parsed.data));
+    const updated = await db.transaction(async (trx) => {
+      const n = await trx("events").where({ id, status: "pending" }).update(columnsFor(parsed.data));
+      if (n) await audit(trx, req.user!, "event.updated", id, JSON.stringify(parsed.data));
+      return n;
+    });
+    if (!updated) {
+      res.status(409).json({ error: "Approved events are locked" });
+      return;
+    }
     res.json(await getEvent(db, id));
   }));
 
@@ -120,8 +130,17 @@ export function createApp(db: Db, opts: { staticDir?: string } = {}) {
       return;
     }
     const costCenter = costCenterFor(existing.category);
-    await db("events").where({ id }).update({ status: "approved", approved_by: req.user!.name, cost_center: costCenter });
-    await audit(db, req.user!, "event.approved", id, `booked to ${costCenter}`);
+    const approved = await db.transaction(async (trx) => {
+      const n = await trx("events")
+        .where({ id, status: "pending" })
+        .update({ status: "approved", approved_by: req.user!.name, cost_center: costCenter });
+      if (n) await audit(trx, req.user!, "event.approved", id, `booked to ${costCenter}`);
+      return n;
+    });
+    if (!approved) {
+      res.status(409).json({ error: "Event already approved" });
+      return;
+    }
     res.json(await getEvent(db, id));
   }));
 
@@ -137,7 +156,7 @@ export function createApp(db: Db, opts: { staticDir?: string } = {}) {
   }
 
   app.use((err: Error, req: Request, res: Response, _next: NextFunction) => {
-    log("error", err.message, { method: req.method, path: req.originalUrl, error: err.name, stack: err.stack });
+    log("error", err.message, { method: req.method, path: req.path, error: err.name, stack: err.stack });
     res.status(500).json({ error: "Internal server error" });
   });
 

@@ -9,7 +9,7 @@ export const toEvent = (r: Row): SavingsEvent => ({
   category: r.category as Category,
   baselinePrice: Number(r.baseline_price),
   negotiatedPrice: Number(r.negotiated_price),
-  date: String(r.date).slice(0, 10),
+  date: r.date instanceof Date ? r.date.toISOString().slice(0, 10) : String(r.date).slice(0, 10),
   status: r.status as SavingsEvent["status"],
   createdBy: String(r.created_by),
   approvedBy: (r.approved_by as string) ?? null,

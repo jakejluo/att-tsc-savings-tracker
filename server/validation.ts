@@ -11,6 +11,7 @@ const fields = {
   date: z
     .string()
     .regex(/^\d{4}-\d{2}-\d{2}$/, "Date must be YYYY-MM-DD")
+    .refine((d) => { const t = new Date(`${d}T00:00:00Z`); return !isNaN(t.getTime()) && t.toISOString().startsWith(d); }, "Date is not a real calendar date")
     .refine((d) => d <= new Date().toISOString().slice(0, 10), "Date cannot be in the future"),
 };
 

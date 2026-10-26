@@ -34,6 +34,7 @@ describe("events API", () => {
     ["negative price", { baselinePrice: -5 }],
     ["bad date", { date: "15/09/2026" }],
     ["future date", { date: "2099-01-01" }],
+    ["impossible date", { date: "2026-02-30" }],
   ])("rejects %s", async (_name, patch) => {
     const res = await request(ctx.app)
       .post("/api/events")
