@@ -69,3 +69,28 @@ describe("RBAC", () => {
     expect(res.status).toBe(409);
   });
 });
+
+describe("RBAC: no self-approval through PATCH (Devin Review finding)", () => {
+  it("rejects status changes from a sourcing manager on their own event", async () => {
+    const created = await createAsManager();
+    const res = await request(ctx.app)
+      .patch(`/api/events/${created.id}`)
+      .set(bearer(ctx.manager))
+      .send({ status: "approved" });
+    expect(res.status).toBe(400);
+
+    const after = (await request(ctx.app).get("/api/events").set(bearer(ctx.finance))).body.find(
+      (e: { id: number }) => e.id === created.id,
+    );
+    expect(after).toMatchObject({ status: "pending", approvedBy: null });
+  });
+
+  it("does not let finance rewrite a manager's event", async () => {
+    const created = await createAsManager();
+    const res = await request(ctx.app)
+      .patch(`/api/events/${created.id}`)
+      .set(bearer(ctx.finance))
+      .send({ negotiatedPrice: 1000 });
+    expect(res.status).toBe(403);
+  });
+});

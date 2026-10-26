@@ -79,7 +79,7 @@ export function createApp(db: Db, opts: { staticDir?: string } = {}) {
     res.status(201).json(await getEvent(db, id));
   }));
 
-  api.patch("/events/:id", requireRole("sourcing_manager", "finance_approver"), wrap(async (req, res) => {
+  api.patch("/events/:id", requireRole("sourcing_manager"), wrap(async (req, res) => {
     const id = Number(req.params.id);
     const existing = await getEvent(db, id);
     if (!existing) {
@@ -91,7 +91,7 @@ export function createApp(db: Db, opts: { staticDir?: string } = {}) {
       res.status(400).json({ error: formatZodError(parsed.error) });
       return;
     }
-    if (req.user!.role === "sourcing_manager" && existing.createdBy !== req.user!.name) {
+    if (existing.createdBy !== req.user!.name) {
       res.status(403).json({ error: "You can only edit events you created" });
       return;
     }

@@ -23,7 +23,7 @@ export const createEventSchema = z
   .refine(belowBaseline, { message: "Negotiated price must be below baseline price", path: ["negotiatedPrice"] });
 
 export const updateEventSchema = z
-  .object({ ...fields, status: z.enum(["pending", "approved"]) })
+  .object(fields)
   .partial()
   .strict();
 
