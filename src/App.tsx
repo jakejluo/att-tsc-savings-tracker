@@ -5,6 +5,7 @@ import LogForm, { NewEvent } from "./components/LogForm";
 import CategoryChart from "./components/CategoryChart";
 import EventsTable from "./components/EventsTable";
 import AuditLog from "./components/AuditLog";
+import FinanceQueue from "./components/FinanceQueue";
 import { api, loadSession, saveSession, Session } from "./api";
 import { AuditEntry, Role, SavingsEvent, Summary } from "../shared/types";
 import { usd } from "./format";
@@ -101,6 +102,13 @@ export default function App() {
       {tab === "audit" ? (
         <main className="layout single">
           <AuditLog entries={audit} />
+        </main>
+      ) : isFinance ? (
+        <main className="layout single">
+          <section className="dashboard">
+            {error && <p className="error" role="alert">{error}</p>}
+            <FinanceQueue events={events} audit={audit} summary={summary} onApprove={approve} />
+          </section>
         </main>
       ) : (
         <main className={`layout ${isManager ? "" : "single"}`}>

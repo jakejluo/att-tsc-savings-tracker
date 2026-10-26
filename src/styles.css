@@ -85,3 +85,41 @@ th, td { padding: 8px; border-bottom: 1px solid var(--line); }
 .preset span { color: var(--muted); font-size: 13px; }
 .custom { display: flex; gap: 10px; align-items: center; }
 .custom input { flex: 1; font: inherit; padding: 8px 10px; border: 1px solid var(--line); border-radius: 6px; }
+
+/* Finance approval queue */
+:root { --red: #c62828; }
+.overdue-value { color: var(--red); }
+.aging-bar { display: flex; height: 22px; border-radius: 6px; overflow: hidden; background: var(--bg); gap: 2px; }
+.seg { min-width: 4px; }
+.aging-legend { display: flex; gap: 28px; margin-top: 10px; font-size: 13px; color: var(--muted); }
+.aging-legend strong { color: var(--ink); }
+.dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; vertical-align: -1px; }
+.b0-7 { background: var(--blue); }
+.b8-30 { background: #f0a400; }
+.b30p { background: var(--red); }
+.queue-grid { display: grid; grid-template-columns: 1fr 380px; gap: 20px; align-items: start; }
+.queue-wrap { max-height: 560px; }
+.age { color: white; border-radius: 4px; padding: 2px 6px; font-weight: 700; font-size: 12px; font-variant-numeric: tabular-nums; }
+tr.clickable { cursor: pointer; }
+tr.clickable:hover td { background: #f5f9fc; }
+tr.overdue td { background: #fdf1f1; }
+tr.overdue td:first-child { box-shadow: inset 3px 0 0 var(--red); }
+tr.clickable.selected td { background: #e3f3fb; }
+tr.clickable.selected td:first-child { box-shadow: inset 3px 0 0 var(--navy); }
+.approve {
+  background: var(--blue); color: white; border: 0; border-radius: 6px; padding: 5px 12px; font-weight: 600; font-size: 12px;
+}
+.approve:hover { background: #0087bb; }
+.history { position: sticky; top: 20px; }
+.facts { display: grid; grid-template-columns: auto 1fr; gap: 6px 12px; margin: 0 0 16px; font-size: 13px; }
+.facts dt { color: var(--muted); }
+.facts dd { margin: 0; }
+.timeline { list-style: none; margin: 0; padding: 0 0 0 16px; border-left: 2px solid var(--line); }
+.timeline li { position: relative; display: flex; flex-direction: column; gap: 2px; padding: 0 0 14px 4px; font-size: 13px; }
+.timeline li::before {
+  content: ""; position: absolute; left: -23px; top: 3px; width: 10px; height: 10px; border-radius: 50%;
+  background: var(--blue); border: 2px solid white;
+}
+.timeline li.event-approved::before { background: var(--green); }
+.tl-action { font-weight: 700; color: var(--navy); }
+.tl-who, .tl-when, .tl-detail { color: var(--muted); }
