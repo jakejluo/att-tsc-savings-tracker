@@ -5,6 +5,7 @@ test("sourcing manager submits, finance approves", async ({ page }) => {
 
   await page.getByRole("button", { name: /Sourcing manager/ }).click();
   await expect(page.getByTestId("who")).toContainText("sam.rivera");
+  await expect(page.getByTestId("total-savings")).not.toHaveText("$0");
   const totalBefore = await page.getByTestId("total-savings").textContent();
 
   await page.getByLabel("Supplier").fill("E2E Demo Supplier");
