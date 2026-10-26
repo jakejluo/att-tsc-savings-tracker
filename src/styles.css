@@ -85,3 +85,30 @@ th, td { padding: 8px; border-bottom: 1px solid var(--line); }
 .preset span { color: var(--muted); font-size: 13px; }
 .custom { display: flex; gap: 10px; align-items: center; }
 .custom input { flex: 1; font: inherit; padding: 8px 10px; border: 1px solid var(--line); border-radius: 6px; }
+.exec { display: flex; flex-direction: column; gap: 24px; }
+.exec-head { display: flex; justify-content: space-between; align-items: baseline; }
+.exec-head h1 { margin: 0; font-size: 26px; color: var(--navy); }
+.exec-tiles { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+.exec-tile { display: flex; flex-direction: column; gap: 8px; border-top: 6px solid var(--navy); padding: 22px 24px; }
+.exec-tile.good { border-top-color: var(--blue); }
+.exec-tile.warn { border-top-color: var(--amber); }
+.exec-label { font-size: 15px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; }
+.exec-value { font-size: 44px; font-weight: 800; color: var(--navy); font-variant-numeric: tabular-nums; }
+.exec-tile.warn .exec-value { color: var(--amber); }
+.exec-sub { font-size: 14px; color: var(--muted); }
+.exec-row { display: grid; grid-template-columns: 1fr 1.4fr; gap: 20px; align-items: stretch; }
+.exec-row h2 { font-size: 18px; }
+.split { display: flex; height: 44px; border-radius: 8px; overflow: hidden; margin: 8px 0 20px; }
+.split-approved { background: var(--blue); }
+.split-pending { flex: 1; background: #f5b54a; }
+.split-legend { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.split-legend div { display: flex; flex-direction: column; gap: 4px; font-size: 15px; color: var(--muted); }
+.split-legend strong { font-size: 30px; color: var(--ink); font-variant-numeric: tabular-nums; }
+.dot { display: inline-block; width: 12px; height: 12px; border-radius: 3px; margin-right: 6px; }
+.dot.approved { background: var(--blue); }
+.dot.pending { background: #f5b54a; }
+.exec-bars { display: flex; flex-direction: column; gap: 16px; }
+.exec-bar-row { display: grid; grid-template-columns: 170px 1fr 120px 44px; align-items: center; gap: 14px; font-size: 16px; }
+.exec-bar-row .bar-track { height: 28px; }
+.exec-bar-row strong { text-align: right; font-size: 18px; font-variant-numeric: tabular-nums; }
+.exec-bar-row .muted { text-align: right; }
