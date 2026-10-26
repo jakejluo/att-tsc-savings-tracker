@@ -5,6 +5,7 @@ import LogForm, { NewEvent } from "./components/LogForm";
 import CategoryChart from "./components/CategoryChart";
 import EventsTable from "./components/EventsTable";
 import AuditLog from "./components/AuditLog";
+import Workbench from "./components/Workbench";
 import { api, loadSession, saveSession, Session } from "./api";
 import { AuditEntry, Role, SavingsEvent, Summary } from "../shared/types";
 import { usd } from "./format";
@@ -49,6 +50,9 @@ export default function App() {
   function logout() {
     saveSession(null);
     setSession(null);
+    setEvents([]);
+    setSummary(null);
+    setAudit([]);
     setTab("dashboard");
   }
 
@@ -83,6 +87,17 @@ export default function App() {
     );
   }
 
+  if (!summary) {
+    return (
+      <>
+        <Header>
+          <button className="signout" onClick={logout}>Sign out</button>
+        </Header>
+        <main className="login">{error ? <p className="error" role="alert">{error}</p> : <p className="muted">Loading…</p>}</main>
+      </>
+    );
+  }
+
   const isManager = session.user.role === "sourcing_manager";
   const isFinance = session.user.role === "finance_approver";
 
@@ -90,7 +105,7 @@ export default function App() {
     <>
       <Header>
         <nav className="tabs">
-          <button className={tab === "dashboard" ? "active" : ""} onClick={() => setTab("dashboard")}>Dashboard</button>
+          <button className={tab === "dashboard" ? "active" : ""} onClick={() => setTab("dashboard")}>{isManager ? "Workbench" : "Dashboard"}</button>
           <button className={tab === "audit" ? "active" : ""} onClick={() => setTab("audit")}>Audit log</button>
         </nav>
         <span className="who" data-testid="who">
@@ -102,23 +117,29 @@ export default function App() {
         <main className="layout single">
           <AuditLog entries={audit} />
         </main>
+      ) : isManager ? (
+        <main className="layout">
+          <div className="rail">
+            <LogForm onSubmit={add} error={error} />
+          </div>
+          <Workbench me={session.user.name} events={events} summary={summary} audit={audit} />
+        </main>
       ) : (
-        <main className={`layout ${isManager ? "" : "single"}`}>
-          {isManager && <LogForm onSubmit={add} error={error} />}
+        <main className="layout single">
           <section className="dashboard">
-            {!isManager && error && <p className="error" role="alert">{error}</p>}
+            {error && <p className="error" role="alert">{error}</p>}
             <div className="kpis">
               <div className="card kpi">
                 <span className="kpi-label">Approved savings</span>
-                <span className="kpi-value" data-testid="total-savings">{usd(summary?.approvedTotal ?? 0)}</span>
+                <span className="kpi-value" data-testid="total-savings">{usd(summary.approvedTotal)}</span>
               </div>
               <div className="card kpi">
                 <span className="kpi-label">Pending finance approval</span>
-                <span className="kpi-value pending-value">{usd(summary?.pendingTotal ?? 0)}</span>
-                <span className="kpi-sub">{summary?.pendingCount ?? 0} events</span>
+                <span className="kpi-value pending-value">{usd(summary.pendingTotal)}</span>
+                <span className="kpi-sub">{summary.pendingCount} events</span>
               </div>
             </div>
-            <CategoryChart totals={summary?.byCategory ?? []} />
+            <CategoryChart totals={summary.byCategory} />
             <EventsTable events={events} canApprove={() => isFinance} onApprove={approve} />
           </section>
         </main>

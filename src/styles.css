@@ -85,3 +85,31 @@ th, td { padding: 8px; border-bottom: 1px solid var(--line); }
 .preset span { color: var(--muted); font-size: 13px; }
 .custom { display: flex; gap: 10px; align-items: center; }
 .custom input { flex: 1; font: inherit; padding: 8px 10px; border: 1px solid var(--line); border-radius: 6px; }
+.rail { position: sticky; top: 20px; }
+.pipeline { display: flex; align-items: stretch; gap: 12px; }
+.stage-wrap { display: flex; align-items: center; gap: 12px; flex: 1; }
+.stage {
+  flex: 1; display: flex; flex-direction: column; gap: 6px;
+  padding: 14px 16px; border-radius: 8px; background: var(--bg); border-left: 4px solid var(--line);
+}
+.stage.pending { border-left-color: var(--amber); }
+.stage.pending .kpi-value { color: var(--amber); }
+.stage.approved { border-left-color: var(--green); }
+.stage.approved .kpi-value { color: var(--green); }
+.stage.team { border-left-color: var(--navy); margin-left: 12px; }
+.chevron { font-size: 32px; color: var(--blue); line-height: 1; }
+.split { display: flex; height: 10px; border-radius: 5px; overflow: hidden; margin: 16px 0 8px; background: var(--bg); }
+.split-part.pending { background: var(--amber); }
+.split-part.approved { background: var(--green); }
+.workbench-grid { display: grid; grid-template-columns: 1fr 300px; gap: 20px; align-items: start; }
+.mine { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.chips { display: flex; gap: 6px; }
+.chip {
+  background: white; border: 1px solid var(--line); border-radius: 999px;
+  padding: 4px 12px; font-size: 13px; color: var(--muted); text-transform: capitalize;
+}
+.chip.active { background: var(--navy); border-color: var(--navy); color: white; }
+.activity { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; font-size: 13px; }
+.activity li { display: flex; flex-direction: column; gap: 2px; padding-bottom: 10px; border-bottom: 1px solid var(--line); }
+.activity strong { text-transform: capitalize; color: var(--navy); }
+td:first-child { white-space: nowrap; }
