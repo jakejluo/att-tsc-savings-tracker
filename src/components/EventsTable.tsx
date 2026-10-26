@@ -2,15 +2,17 @@ import { SavingsEvent, savingsOf } from "../../shared/types";
 import { usd } from "../format";
 
 interface Props {
+  title?: string;
+  showOwner?: boolean;
   events: SavingsEvent[];
   canApprove: (e: SavingsEvent) => boolean;
   onApprove: (id: number) => void;
 }
 
-export default function EventsTable({ events, canApprove, onApprove }: Props) {
+export default function EventsTable({ title = "Savings events", showOwner = true, events, canApprove, onApprove }: Props) {
   return (
     <div className="card">
-      <h2>Savings events</h2>
+      <h2>{title}</h2>
       <div className="table-wrap">
         <table>
           <thead>
@@ -21,7 +23,7 @@ export default function EventsTable({ events, canApprove, onApprove }: Props) {
               <th className="num">Baseline</th>
               <th className="num">Negotiated</th>
               <th className="num">Savings</th>
-              <th>Owner</th>
+              {showOwner && <th>Owner</th>}
               <th>Status</th>
               <th />
             </tr>
@@ -35,7 +37,7 @@ export default function EventsTable({ events, canApprove, onApprove }: Props) {
                 <td className="num">{usd(e.baselinePrice)}</td>
                 <td className="num">{usd(e.negotiatedPrice)}</td>
                 <td className="num">{usd(savingsOf(e))}</td>
-                <td>{e.createdBy}</td>
+                {showOwner && <td>{e.createdBy}</td>}
                 <td>
                   <span className={`pill ${e.status}`}>{e.status}</span>
                 </td>
