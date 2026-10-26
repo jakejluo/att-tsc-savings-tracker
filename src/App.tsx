@@ -5,11 +5,12 @@ import LogForm, { NewEvent } from "./components/LogForm";
 import CategoryChart from "./components/CategoryChart";
 import EventsTable from "./components/EventsTable";
 import AuditLog from "./components/AuditLog";
+import ExecSummary from "./components/ExecSummary";
 import { api, loadSession, saveSession, Session } from "./api";
 import { AuditEntry, Role, SavingsEvent, Summary } from "../shared/types";
 import { usd } from "./format";
 
-type Tab = "dashboard" | "audit";
+type Tab = "dashboard" | "summary" | "audit";
 
 export default function App() {
   const [session, setSession] = useState<Session | null>(loadSession);
@@ -91,6 +92,7 @@ export default function App() {
       <Header>
         <nav className="tabs">
           <button className={tab === "dashboard" ? "active" : ""} onClick={() => setTab("dashboard")}>Dashboard</button>
+          <button className={tab === "summary" ? "active" : ""} onClick={() => setTab("summary")}>Executive summary</button>
           <button className={tab === "audit" ? "active" : ""} onClick={() => setTab("audit")}>Audit log</button>
         </nav>
         <span className="who" data-testid="who">
@@ -98,7 +100,11 @@ export default function App() {
         </span>
         <button className="signout" onClick={logout}>Sign out</button>
       </Header>
-      {tab === "audit" ? (
+      {tab === "summary" ? (
+        <main className="layout single">
+          {summary && <ExecSummary summary={summary} lastActivity={audit[0]?.at} />}
+        </main>
+      ) : tab === "audit" ? (
         <main className="layout single">
           <AuditLog entries={audit} />
         </main>
