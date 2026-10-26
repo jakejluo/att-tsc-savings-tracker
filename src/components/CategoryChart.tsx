@@ -1,15 +1,11 @@
-import { CATEGORIES, SavingsEvent, savingsOf } from "../types";
+import { Summary } from "../../shared/types";
 import { usd } from "../format";
 
-export default function CategoryChart({ events }: { events: SavingsEvent[] }) {
-  const totals = CATEGORIES.map((c) => ({
-    category: c,
-    total: events.filter((e) => e.category === c).reduce((s, e) => s + savingsOf(e), 0),
-  }));
+export default function CategoryChart({ totals }: { totals: Summary["byCategory"] }) {
   const max = Math.max(1, ...totals.map((t) => t.total));
   return (
     <div className="card">
-      <h2>Savings by category</h2>
+      <h2>Approved savings by category</h2>
       <div className="bars">
         {totals.map((t) => (
           <div className="bar-row" key={t.category}>

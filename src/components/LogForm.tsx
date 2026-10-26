@@ -1,5 +1,5 @@
 import { FormEvent, useState } from "react";
-import { CATEGORIES, Category } from "../types";
+import { CATEGORIES, Category } from "../../shared/types";
 
 export interface NewEvent {
   supplier: string;
@@ -9,22 +9,23 @@ export interface NewEvent {
   date: string;
 }
 
-export default function LogForm({ onSubmit, error }: { onSubmit: (e: NewEvent) => void; error?: string }) {
+export default function LogForm({ onSubmit, error }: { onSubmit: (e: NewEvent) => Promise<boolean>; error?: string }) {
   const [supplier, setSupplier] = useState("");
   const [category, setCategory] = useState<Category>("Network Equipment");
   const [baseline, setBaseline] = useState("");
   const [negotiated, setNegotiated] = useState("");
   const [date, setDate] = useState(new Date().toISOString().slice(0, 10));
 
-  function submit(e: FormEvent) {
+  async function submit(e: FormEvent) {
     e.preventDefault();
-    onSubmit({
+    const ok = await onSubmit({
       supplier,
       category,
       baselinePrice: Number(baseline),
       negotiatedPrice: Number(negotiated),
       date,
     });
+    if (!ok) return;
     setSupplier("");
     setBaseline("");
     setNegotiated("");
