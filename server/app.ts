@@ -4,7 +4,7 @@ import { Db } from "./db";
 import { authenticate, issueToken, loginSchema, requireRole } from "./auth";
 import { createEventSchema, updateEventSchema, belowBaseline, formatZodError } from "./validation";
 import { audit, columnsFor, getEvent, listAudit, listEvents, summary } from "./repo";
-import { costCenterFor } from "./costCenters";
+import { fy27CostCenterFor } from "./costCenters";
 import { log } from "./log";
 
 const wrap =
@@ -129,7 +129,7 @@ export function createApp(db: Db, opts: { staticDir?: string } = {}) {
       res.status(409).json({ error: "Event already approved" });
       return;
     }
-    const costCenter = costCenterFor(existing.category);
+    const costCenter = fy27CostCenterFor(existing.category);
     const approved = await db.transaction(async (trx) => {
       const n = await trx("events")
         .where({ id, status: "pending" })

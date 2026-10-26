@@ -60,7 +60,7 @@ describe("events API", () => {
     const created = (await request(ctx.app).post("/api/events").set(bearer(ctx.manager)).send(validEvent)).body;
     const res = await request(ctx.app).post(`/api/events/${created.id}/approve`).set(bearer(ctx.finance));
     expect(res.status).toBe(200);
-    expect(res.body).toMatchObject({ status: "approved", approvedBy: "alex.chen", costCenter: "CC-4100-NET" });
+    expect(res.body).toMatchObject({ status: "approved", approvedBy: "alex.chen", costCenter: "CC-5100-NET" });
   });
 
   it("writes an audit entry with actor, action and timestamp", async () => {
