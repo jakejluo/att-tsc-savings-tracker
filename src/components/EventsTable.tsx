@@ -1,4 +1,4 @@
-import { SavingsEvent, savingsOf } from "../types";
+import { SavingsEvent, savingsOf } from "../../shared/types";
 import { usd } from "../format";
 
 interface Props {
@@ -21,6 +21,7 @@ export default function EventsTable({ events, canApprove, onApprove }: Props) {
               <th className="num">Baseline</th>
               <th className="num">Negotiated</th>
               <th className="num">Savings</th>
+              <th>Owner</th>
               <th>Status</th>
               <th />
             </tr>
@@ -34,6 +35,7 @@ export default function EventsTable({ events, canApprove, onApprove }: Props) {
                 <td className="num">{usd(e.baselinePrice)}</td>
                 <td className="num">{usd(e.negotiatedPrice)}</td>
                 <td className="num">{usd(savingsOf(e))}</td>
+                <td>{e.createdBy}</td>
                 <td>
                   <span className={`pill ${e.status}`}>{e.status}</span>
                 </td>
